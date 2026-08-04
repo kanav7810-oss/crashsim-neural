@@ -1,4 +1,6 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
+import { AnimatePresence } from 'framer-motion'
+import LoadingScreen from './LoadingScreen'
 import Overview from './tabs/Overview'
 import ScenarioBuilder from './tabs/ScenarioBuilder'
 import GeometryOptimizer from './tabs/GeometryOptimizer'
@@ -21,7 +23,9 @@ const TABS = [
 ]
 
 export default function App() {
+  const [loaded, setLoaded] = useState(false)
   const [tab, setTab] = useState('overview')
+  const onLoadComplete = useCallback(() => setLoaded(true), [])
   const render = () => {
     switch (tab) {
       case 'overview': return <Overview />
@@ -39,7 +43,11 @@ export default function App() {
   const current = TABS.find(t => t.id === tab)
 
   return (
-    <div className="app-frame">
+    <>
+      <AnimatePresence>
+        {!loaded && <LoadingScreen onComplete={onLoadComplete} />}
+      </AnimatePresence>
+      <div className="app-frame">
       <div className="orbs" aria-hidden="true">
         <div className="orb orb-1" />
         <div className="orb orb-2" />
@@ -297,5 +305,6 @@ export default function App() {
         }
       `}</style>
     </div>
+    </>
   )
 }
