@@ -99,5 +99,6 @@
   "epochs_trained": 339,
   "best_val_hic_rmse": 134.7531280517578,
   "fea_val_hic_rmse": 265.82268662988236,
-  "improvement_pct": 49.307137866911624
+  "val_improvement_pct": 49.307137866911624,
+  "test_improvement_pct": 43.22066395164017
 }

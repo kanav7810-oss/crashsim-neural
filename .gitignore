@@ -34,3 +34,4 @@ api_server.log
 api_server_err.log
 
 .vercel
+.env*

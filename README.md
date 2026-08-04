@@ -5,7 +5,7 @@ occupant injury outcomes (HIC, chest g-force, compartment intrusion, fatality
 probability) for a vehicle geometry and crash configuration, and compares those
 predictions against a linear finite element (FEA) baseline.
 
-**Live demo:** https://app-eight-psi-64.vercel.app
+**Live demo:** https://crashsim-neural.vercel.app
 **API:** https://crashsim-neural-api.onrender.com (FastAPI docs at /docs)
 
 ### Screenshots
@@ -36,7 +36,7 @@ methodology applied to synthetic data, not a claim about any real NHTSA records.
 ## Limitations
 
 * **Dataset size:** 560 synthetic records (390 train / 82 val / 88 test) is small compared to real-world crash databases (NHTSA FARS contains over 50,000 fatal crashes per year). Results demonstrate the methodology, not production-ready accuracy.
-* **R-squared interpretation:** The PINN achieves R² = 0.79 on 88 held-out test samples. For physics-informed surrogate models with 8 input features, published benchmarks typically report R² in the 0.70 to 0.85 range, so this result is within expected bounds.
+* **R-squared interpretation:** The PINN achieves R² = 0.79 on 88 held-out test samples. For physics-informed surrogate models with 16 input features, published benchmarks typically report R² in the 0.70 to 0.85 range, so this result is within expected bounds.
 * **Synthetic data circularity:** The model is trained on physics-engine output and evaluated on the same engine's held-out split. Real-world generalization requires validation against physical crash tests.
 * **Lives-saved projection:** The 8,157 figure applies the modeled 30% risk reduction to roughly 27,360 modeled annual US fatalities. It is a model projection, not an NHTSA claim.
 
