@@ -49,7 +49,7 @@ export default function App() {
 
       <aside className="sidebar">
         <div className="brand">
-          <div className="brand-mark">C/N</div>
+          <img src="/favicon.svg" alt="" className="brand-mark" style={{ width: 28, height: 28, borderRadius: 7 }} />
           <div>
             <div className="brand-name">CRASHSIM</div>
             <div className="brand-sub">NEURAL</div>
@@ -68,7 +68,7 @@ export default function App() {
             )
           })}
         </nav>
-        <div className="sidebar-foot mono">PINN v1.0</div>
+        <div className="sidebar-foot mono">research instrument</div>
       </aside>
 
       <div className="app-main">
@@ -134,11 +134,8 @@ export default function App() {
         }
         .brand { display: flex; align-items: center; gap: 10px; padding: 2px 8px 18px; }
         .brand-mark {
-          width: 28px; height: 28px; border-radius: 7px;
           background: linear-gradient(135deg, var(--accent-fill), var(--accent));
-          color: oklch(0.97 0.004 60); font-family: var(--mono); font-weight: 600;
-          font-size: 11px; display: flex; align-items: center; justify-content: center;
-          letter-spacing: 0; box-shadow: 0 0 18px -4px var(--accent);
+          box-shadow: 0 0 18px -4px var(--accent);
         }
         .brand-name { font-size: 12px; font-weight: 700; letter-spacing: 0.04em; }
         .brand-sub { font-size: 10px; color: var(--muted); letter-spacing: 0.22em; font-family: var(--mono); }

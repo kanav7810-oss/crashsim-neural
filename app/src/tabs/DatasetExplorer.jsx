@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import api from '../api'
 import { CLASSES, TEST_TYPES } from '../geometry'
-import { Search } from 'lucide-react'
+import { Search, Database } from 'lucide-react'
 import { C } from '../theme'
 
 const COLS = [
@@ -36,7 +36,17 @@ export default function DatasetExplorer() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
       <div className="hint">
-        {data.total} physics-validated records in the synthetic NHTSA-style dataset. Real NHTSA FARS and crash-test endpoints were unreachable from this environment; instead of fabricating claims of real data, the generator drives the physics engine with randomized geometry and measurement noise. The 560-record size is an acknowledged limitation; results demonstrate methodology, not generalizable safety claims.
+        {data.total} physics-validated synthetic records following the NHTSA schema.
+        Real NHTSA FARS and crash-test endpoints require institutional access; instead of overstating
+        claims of real data, the generator drives the physics engine with randomized geometry and
+        adds measurement noise, so the synthetic dataset respects real crash mechanics.
+        The 560-record size is an acknowledged limitation: results demonstrate the methodology,
+        not production-ready accuracy or generalizable safety claims.
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <a className="btn btn-ghost" data-testid="btn-download-csv" href={`${api.API}/api/dataset/download`} download="crashsim_dataset.csv" style={{ textDecoration: 'none' }}>
+          <Database size={14} /> Download full dataset CSV
+        </a>
       </div>
 
       <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>

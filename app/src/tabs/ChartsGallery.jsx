@@ -5,12 +5,12 @@ import PlotlyChart from '../components/PlotlyChart'
 const CHART_META = [
   { name: 'accuracy_curves', title: <>PINN training <em>accuracy</em> curves</>, sub: 'Training and validation HIC RMSE over epochs' },
   { name: 'injury_surface', title: <>Injury risk <em>surface</em></>, sub: 'HIC vs impact velocity and A-pillar thickness' },
-  { name: 'class_comparison', title: <>Performance by vehicle <em>class</em></>, sub: 'Prediction error with 95% CI' },
-  { name: 'crumple_efficiency', title: <>Crumple zone <em>efficiency</em></>, sub: 'Energy absorption across vehicle classes and test types' },
+  { name: 'class_comparison', title: <>Performance by vehicle <em>class</em></>, sub: 'Mean HIC with 95% CI. Overlapping CIs indicate the model distinguishes weakly between classes on HIC alone (acknowledged limitation)' },
+  { name: 'crumple_efficiency', title: <>Crumple zone <em>efficiency</em></>, sub: 'Energy absorption per kg across vehicle classes and test types' },
   { name: 'sensitivity', title: <>Feature <em>sensitivity</em> (SHAP)</>, sub: 'Which inputs drive HIC predictions' },
   { name: 'historical_trend', title: <>Historical <em>safety</em> trend</>, sub: 'Median HIC by model year 2000-2024' },
-  { name: 'fatality_by_crash_type', title: <>Fatality probability by <em>crash</em> type</>, sub: 'AIS severity distribution' },
-  { name: 'calibration', title: <>Model <em>calibration</em></>, sub: 'Predicted vs observed risk' }
+  { name: 'fatality_by_crash_type', title: <>Fatality probability by <em>crash</em> type</>, sub: 'AIS severity distribution. Rollover shows concentrated risk near the threshold; this reflects the synthetic data generating process, not a generalizable finding' },
+  { name: 'calibration', title: <>Model <em>calibration</em></>, sub: 'Predicted vs observed risk. Calibration on a small test set (n=88) has high uncertainty; interpreted directionally, not as deployment-ready calibration' }
 ]
 
 export default function ChartsGallery() {

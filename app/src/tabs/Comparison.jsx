@@ -66,15 +66,16 @@ export default function Comparison() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: 20 }}>
-        <Side title="Vehicle A" geom={a} onChange={setA} result={result?.vehicle_a} />
-        <Side title="Vehicle B" geom={b} onChange={setB} result={result?.vehicle_b} />
-      </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
         <SpecularCTA data-testid="btn-compare" onClick={run}>
           <GitCompare size={16} /> Compare vehicles
         </SpecularCTA>
+        <span className="hint" style={{ marginBottom: 0 }}>Configure both vehicles, then press compare to see side-by-side metrics.</span>
         {err && <div style={{ color: 'var(--danger)' }}>{err}</div>}
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: 20 }}>
+        <Side title="Vehicle A" geom={a} onChange={setA} result={result?.vehicle_a} />
+        <Side title="Vehicle B" geom={b} onChange={setB} result={result?.vehicle_b} />
       </div>
       {result && (
         <div className="panel">

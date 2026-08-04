@@ -235,6 +235,16 @@ def dataset(
     return {"total": total, "page": page, "per_page": per_page, "rows": rows}
 
 
+@app.get("/api/dataset/download")
+def dataset_download():
+    """Stream the full 560-record synthetic dataset as CSV for research export."""
+    path = os.path.join(DATA_DIR, "crash_data_validated.csv")
+    if not os.path.exists(path):
+        raise HTTPException(404, "dataset not found")
+    headers = {"Content-Disposition": "attachment; filename=crashsim_dataset.csv"}
+    return FileResponse(path, media_type="text/csv", headers=headers)
+
+
 # ---------------------------------------------------------------------------
 # Prediction, comparison, sweep
 # ---------------------------------------------------------------------------
@@ -339,6 +349,15 @@ def research_summary():
         return json.load(f)
 
 
+@app.get("/api/research/methodology")
+def research_methodology():
+    path = os.path.join(RESEARCH_DIR, "methodology.json")
+    if not os.path.exists(path):
+        raise HTTPException(404, "methodology disclosure not generated")
+    with open(path, encoding="utf-8") as f:
+        return json.load(f)
+
+
 # ---------------------------------------------------------------------------
 # PDF export
 # ---------------------------------------------------------------------------
@@ -383,9 +402,9 @@ def _build_pdf() -> str:
          f"{summary['mean_hic_prediction_error']['mae']:.1f}"],
         ["PINN HIC RMSE / R2",
          f"{summary['mean_hic_prediction_error']['rmse']:.1f} / "
-         f"{summary['mean_hic_prediction_error']['r2']:.3f}"],
+         f"{summary['mean_hic_prediction_error']['r2']:.2f}"],
         ["FEA baseline HIC RMSE / R2",
-         f"{summary['fea_baseline']['rmse']:.1f} / {summary['fea_baseline']['r2']:.3f}"],
+         f"{summary['fea_baseline']['rmse']:.1f} / {summary['fea_baseline']['r2']:.2f}"],
         ["PINN accuracy improvement over FEA",
          f"{summary['accuracy_improvement_over_fea_pct']:.1f}%"],
         ["Computational speedup (PINN vs FEA)",

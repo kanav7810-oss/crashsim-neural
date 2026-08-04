@@ -95,9 +95,9 @@ export default function GeometryOptimizer() {
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={sweep} margin={{ left: 0, right: 10, top: 5 }}>
               <CartesianGrid strokeDasharray="3 3" stroke={C.grid} />
-              <XAxis dataKey="x" stroke={C.muted} label={{ value: 'km/h', position: 'insideBottomRight', fill: C.muted, fontSize: 11 }} tick={{ fontSize: 11 }} />
+              <XAxis dataKey="x" stroke={C.muted} label={{ value: 'km/h', position: 'insideBottomRight', fill: C.muted, fontSize: 11 }} tick={{ fontSize: 11 }} tickFormatter={v => Math.round(v)} interval={Math.floor(sweep.length / 8)} />
               <YAxis stroke={C.muted} tick={{ fontSize: 11 }} />
-              <Tooltip contentStyle={TOOLTIP} />
+              <Tooltip contentStyle={TOOLTIP} labelFormatter={v => `${Math.round(v)} km/h`} />
               <Legend wrapperStyle={{ fontSize: 12 }} />
               <Line dataKey="hic_pinn" name="PINN HIC" stroke={C.accent} strokeWidth={2} dot={false} />
               <Line dataKey="hic_fea" name="FEA HIC" stroke={C.muted} strokeWidth={2} strokeDasharray="5 4" dot={false} />

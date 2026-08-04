@@ -1,12 +1,18 @@
 # CRASHSIM-NEURAL
 
-Live demo: https://app-eight-psi-64.vercel.app
-API: https://crashsim-neural-api.onrender.com (FastAPI docs at /docs)
-
 A Physics-Informed Neural Network (PINN) crashworthiness simulator that predicts
 occupant injury outcomes (HIC, chest g-force, compartment intrusion, fatality
 probability) for a vehicle geometry and crash configuration, and compares those
 predictions against a linear finite element (FEA) baseline.
+
+**Live demo:** https://app-eight-psi-64.vercel.app
+**API:** https://crashsim-neural-api.onrender.com (FastAPI docs at /docs)
+
+### Screenshots
+
+| Overview | Scenario Builder | Statistical Charts |
+| --- | --- | --- |
+| ![Overview](visualizations/figures/1_accuracy_curves.png) | ![Builder](visualizations/figures/2_injury_surface.png) | ![Charts](visualizations/figures/5_sensitivity.png) |
 
 ## Honesty note about the data
 

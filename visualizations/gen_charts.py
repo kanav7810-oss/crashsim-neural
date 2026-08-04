@@ -133,11 +133,20 @@ def chart_injury_surface() -> dict:
             Z[i, j] = _pinn_hic([row])[0]
     fig = go.Figure(data=[go.Surface(
         x=vels, y=thks, z=Z, colorscale=BRONZE_SCALE,
-        colorbar=dict(title="Predicted HIC"))])
-    fig.update_layout(title="Injury risk surface: velocity vs A-pillar thickness",
-                      scene=dict(xaxis_title="Velocity (km/h)",
-                                 yaxis_title="A-pillar thickness (mm)",
-                                 zaxis_title="HIC"))
+        colorbar=dict(title="HIC"))])
+    fig.update_layout(
+        title="Injury risk surface: velocity vs A-pillar thickness",
+        scene=dict(
+            xaxis_title="Velocity (km/h)",
+            yaxis_title="A-pillar thickness (mm)",
+            zaxis_title="HIC",
+            camera=dict(eye=dict(x=1.45, y=-1.30, z=0.75)),
+            xaxis=dict(tickfont=dict(size=11), title_font=dict(size=12)),
+            yaxis=dict(tickfont=dict(size=11), title_font=dict(size=12)),
+            zaxis=dict(tickfont=dict(size=11), title_font=dict(size=12)),
+        ),
+        margin=dict(l=12, r=12, t=48, b=12),
+    )
     return _as_json(fig)
 
 
@@ -267,7 +276,7 @@ def chart_calibration() -> dict:
                     name="PINN calibration",
                     mode="markers+lines", marker=dict(size=11, color=ACCENT),
                     line=dict(color=ACCENT, width=2))
-    fig.update_layout(title="Model calibration: predicted vs actual fatality",
+    fig.update_layout(title="Model calibration: predicted vs actual fatality (n=88, high uncertainty)",
                       xaxis_title="Predicted probability",
                       yaxis_title="Actual probability")
     return _as_json(fig)
@@ -330,9 +339,10 @@ def _save_pngs():
     fig, ax = plt.subplots(figsize=(7, 5), subplot_kw=dict(projection="3d"))
     VV, TT = np.meshgrid(vels, thks)
     ax.plot_surface(VV, TT, Z, cmap="viridis", alpha=0.95)
-    ax.set_xlabel("Velocity (km/h)", fontsize=8)
-    ax.set_ylabel("Thickness (mm)", fontsize=8)
-    ax.set_zlabel("HIC", fontsize=8)
+    ax.set_xlabel("Velocity (km/h)", fontsize=9)
+    ax.set_ylabel("Thickness (mm)", fontsize=9)
+    ax.set_zlabel("HIC", fontsize=9)
+    ax.view_init(elev=25, azim=-60)
     fig.tight_layout()
     fig.savefig(os.path.join(PNG_DIR, "2_injury_surface.png"), dpi=130)
     plt.close(fig)
@@ -367,7 +377,7 @@ def _save_pngs():
                                    section_height_mm=150, section_width_mm=100)
             H[i, j] = energy_absorbed(solve_crush(geom, 0.85), geom) / 1500.0
     fig, ax = plt.subplots(figsize=(7, 4.5))
-    im = ax.imshow(H, aspect="auto", origin="lower", cmap="plasma",
+    im = ax.imshow(H, aspect="auto", origin="lower", cmap="magma",
                    extent=[lengths.min(), lengths.max(), thks2.min(), thks2.max()])
     ax.set_xlabel("Crumple zone length (m)", fontsize=9)
     ax.set_ylabel("A-pillar thickness (mm)", fontsize=9)
@@ -386,7 +396,7 @@ def _save_pngs():
     ax.barh(names5[::-1], vals5[::-1], color="#967033", alpha=0.85)
     ax.set_title(f"Sensitivity of HIC ({sens['method']})", fontsize=11)
     ax.set_xlabel("Normalized importance", fontsize=9)
-    fig.tight_layout()
+    fig.subplots_adjust(left=0.28)
     fig.savefig(os.path.join(PNG_DIR, "5_sensitivity.png"), dpi=130)
     plt.close(fig)
 

@@ -1,0 +1,52 @@
+{
+  "hyperparameters": {
+    "hidden_layers": [
+      64,
+      64,
+      64
+    ],
+    "activation": "tanh",
+    "outputs": 5,
+    "optimizer": "Adam",
+    "learning_rate": 0.001,
+    "lr_scheduler": "ReduceLROnPlateau(factor=0.5, patience=40)",
+    "batch_size": 64,
+    "max_epochs": 1200,
+    "early_stop_patience": 150,
+    "physics_loss_weight": 0.6,
+    "data_loss": "MSE on min-max normalized targets",
+    "physics_loss": "energy conservation + pulse consistency residuals",
+    "features": 16,
+    "train_seed": 7
+  },
+  "ablation": {
+    "pinn_with_physics_r2": 0.7881968179547224,
+    "pure_mlp_no_physics_r2": 0.9429389834403992,
+    "pinn_advantage_r2": -0.15474216548567676,
+    "ablation_epochs": 400,
+    "note": "Same architecture, optimizer and learning rate; the physics loss is removed by zeroing its weight. The delta reflects the marginal contribution of physics consistency constraints on this dataset."
+  },
+  "fatality_classifier": {
+    "threshold": 0.5,
+    "n_test": 88,
+    "n_pos": 13,
+    "n_neg": 75,
+    "confusion_matrix": {
+      "tp": 4,
+      "tn": 52,
+      "fp": 23,
+      "fn": 9
+    },
+    "accuracy": 0.6363636363636364,
+    "precision": 0.14814814814814814,
+    "recall": 0.3076923076923077,
+    "f1": 0.2,
+    "roc_auc": 0.5846153846153846,
+    "note": "The 0.5 threshold on a continuous risk score is severe; with low base-rate fatalities in the synthetic dataset the F1 reflects the model's ranking capacity rather than a deployment threshold."
+  },
+  "cross_validation": {
+    "method": "single stratified train/val/test split (70/15/15 by vehicle class)",
+    "kfold_considered": true,
+    "kfold_not_used_reason": "Stratified k-fold cross-validation on a 560-record synthetic dataset with a 5-output regression target and a tiny (41KB) model would add compute cost without changing the uncertainty story: the bootstrap confidence intervals on RMSE/MAE already quantify sample-size variance. A future iteration with real NHTSA records and 10x the data should switch to 5-fold CV."
+  }
+}

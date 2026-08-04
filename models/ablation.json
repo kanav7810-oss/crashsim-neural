@@ -1,0 +1,7 @@
+{
+  "pinn_with_physics_r2": 0.7881968179547224,
+  "pure_mlp_no_physics_r2": 0.9429389834403992,
+  "pinn_advantage_r2": -0.15474216548567676,
+  "ablation_epochs": 400,
+  "note": "Same architecture, optimizer and learning rate; the physics loss is removed by zeroing its weight. The delta reflects the marginal contribution of physics consistency constraints on this dataset."
+}

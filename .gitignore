@@ -32,3 +32,5 @@ Thumbs.db
 # Reports (regenerate with /api/export/pdf)
 api_server.log
 api_server_err.log
+
+.vercel
