@@ -353,7 +353,12 @@ def research_summary():
 def research_methodology():
     path = os.path.join(RESEARCH_DIR, "methodology.json")
     if not os.path.exists(path):
-        raise HTTPException(404, "methodology disclosure not generated")
+        return {
+            "hyperparameters": None,
+            "ablation": None,
+            "fatality_classifier": None,
+            "cross_validation": None,
+        }
     with open(path, encoding="utf-8") as f:
         return json.load(f)
 
