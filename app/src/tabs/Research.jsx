@@ -24,10 +24,10 @@ export default function Research() {
   useEffect(() => {
     Promise.all([
       api.get('/api/research/summary'),
-      api.get('/api/research/methodology'),
       api.get('/api/charts/sensitivity')
-    ]).then(([sum, meth, ch]) => { setS(sum); setM(meth); setChart(ch) })
+    ]).then(([sum, ch]) => { setS(sum); setChart(ch) })
       .catch(e => setErr(e.message))
+    api.get('/api/research/methodology').then(setM).catch(() => setM(null))
   }, [])
 
   const exportPdf = async () => {
