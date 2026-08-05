@@ -122,7 +122,7 @@ export default function LoadingScreen({ onComplete }) {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6, delay: 0.5 }}
             >
-              Crash <em style={{ fontStyle: 'italic', color: 'var(--accent)' }}>premium</em>
+              Crashworthiness, <em style={{ fontStyle: 'italic', color: 'var(--accent)' }}>precisely.</em>
             </motion.div>
 
             <motion.div

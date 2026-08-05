@@ -175,8 +175,7 @@ const SpecularButton = ({
       const t = Math.max(0, 1 - dist / Math.max(propsRef.current.proximity, 1));
       proximityT = t * t * (3 - 2 * t);
     };
-    window.addEventListener('pointermove', onPointerMove);
-
+    document.addEventListener('pointermove', onPointerMove);
     let angle = 2.4;
     let idleAngle = 2.4;
     let bright = 0;
@@ -186,8 +185,10 @@ const SpecularButton = ({
     const lineC = new Color();
     const baseC = new Color();
 
+    let visible = true;
     const update = now => {
-      raf = requestAnimationFrame(update);
+      raf = 0;
+      if (!visible || document.hidden) return;
       const dt = Math.min((now - last) / 1000, 0.05);
       last = now;
       const p = propsRef.current;
@@ -213,13 +214,26 @@ const SpecularButton = ({
       program.uniforms.uShineFade.value = (p.shineFade * Math.PI) / 180;
       program.uniforms.uThickness.value = p.thickness * dpr;
       renderer.render({ scene: mesh });
+      raf = requestAnimationFrame(update);
     };
+
+    const onVis = () => { visible = !document.hidden; if (visible && !raf) { last = performance.now(); raf = requestAnimationFrame(update); } };
+    document.addEventListener('visibilitychange', onVis);
+    const io = new IntersectionObserver((es) => {
+      visible = es.some(e => e.isIntersecting) && !document.hidden;
+      if (visible && !raf) { last = performance.now(); raf = requestAnimationFrame(update); }
+      else if (!visible && raf) { cancelAnimationFrame(raf); raf = 0; }
+    }, { threshold: 0.01 });
+    io.observe(btn);
+
     raf = requestAnimationFrame(update);
 
     return () => {
       cancelAnimationFrame(raf);
       ro.disconnect();
-      window.removeEventListener('pointermove', onPointerMove);
+      io.disconnect();
+      document.removeEventListener('pointermove', onPointerMove);
+      document.removeEventListener('visibilitychange', onVis);
       if (gl.canvas.parentNode === fx) fx.removeChild(gl.canvas);
       gl.getExtension('WEBGL_lose_context')?.loseContext();
     };

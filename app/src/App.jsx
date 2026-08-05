@@ -219,6 +219,8 @@ export default function App() {
           border-radius: var(--radius); padding: 20px;
           box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.05), 0 14px 40px -18px oklch(0 0 0 / 0.7);
           transition: border-color 200ms cubic-bezier(.16,1,.3,1), box-shadow 200ms cubic-bezier(.16,1,.3,1);
+          content-visibility: auto;
+          contain-intrinsic-size: 1px 600px;
         }
         .panel:hover { border-color: var(--border-s); box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.06), 0 16px 48px -18px oklch(0 0 0 / 0.75), 0 0 0 1px oklch(0.63 0.11 62 / 0.06); }
         .panel::after {
