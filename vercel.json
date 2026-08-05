@@ -1,7 +1,9 @@
-﻿{
-  "installCommand": "cd app && npm install",
-  "buildCommand": "cd app && npm run build",
+{
+  "buildCommand": "cd app && npm install && npm run build",
   "outputDirectory": "app/dist",
+  "functions": {
+    "api/main.py": { "maxDuration": 60 }
+  },
   "rewrites": [
     { "source": "/((?!api).*)", "destination": "/index.html" }
   ]

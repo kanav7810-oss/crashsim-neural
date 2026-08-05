@@ -1,4 +1,6 @@
-const API = import.meta.env.VITE_API_BASE || 'http://localhost:8000'
+// API calls go same-origin (Vercel) — the FastAPI app is deployed as a
+// Vercel Python serverless function under /api/*, so no CORS and no external host.
+const API = import.meta.env.VITE_API_BASE || ''
 
 async function handle(r) {
   if (!r.ok) {
@@ -12,7 +14,6 @@ async function handle(r) {
   return r.json()
 }
 
-// Absolute (Render) — for read-only GETs that work fine cross-origin.
 export function get(path, params) {
   const qs = params
     ? '?' + new URLSearchParams(Object.entries(params).filter(([, v]) => v !== '' && v != null)).toString()
@@ -20,13 +21,10 @@ export function get(path, params) {
   return fetch(API + path + qs).then(handle)
 }
 
-// Relative (Vercel same-origin proxy) — for previously-POST endpoints that
-// need a server-side hop to avoid CORS. Returns parsed JSON.
+// Kept for backward compatibility — identical to get() now that everything is
+// same-origin on Vercel.
 export function getLocal(path, params) {
-  const qs = params
-    ? '?' + new URLSearchParams(Object.entries(params).filter(([, v]) => v !== '' && v != null)).toString()
-    : ''
-  return fetch(path + qs).then(handle)
+  return get(path, params)
 }
 
 export function post(path, body) {
