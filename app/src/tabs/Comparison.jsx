@@ -52,9 +52,13 @@ export default function Comparison() {
   const run = async () => {
     setErr('')
     try {
-      const r = await api.post('/api/compare', { vehicle_a: a, vehicle_b: b })
+      const params = {}
+      for (const [k, v] of Object.entries(a)) params[`a_${k}`] = v
+      for (const [k, v] of Object.entries(b)) params[`b_${k}`] = v
+      const qs = new URLSearchParams(params).toString()
+      const r = await api.get(`/api/compare?${qs}`)
       setResult(r)
-    } catch (e) { setErr(e.message) }
+    } catch (e) { setErr('Comparison service unavailable.') }
   }
 
   const chartData = result ? [

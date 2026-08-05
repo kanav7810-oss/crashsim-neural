@@ -34,10 +34,10 @@ export default function Research() {
     setExporting(true)
     setExported(false)
     try {
-      await api.post('/api/export/pdf')
+      await api.get('/api/export/pdf')
       setExported(true)
       window.open(api.API + '/api/export/pdf/download', '_blank')
-    } catch (e) { setErr(e.message) }
+    } catch (e) { setErr('PDF export unavailable.') }
     finally { setExporting(false) }
   }
 

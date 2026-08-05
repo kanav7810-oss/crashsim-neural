@@ -248,6 +248,32 @@ def dataset_download():
 # ---------------------------------------------------------------------------
 # Prediction, comparison, sweep
 # ---------------------------------------------------------------------------
+@app.get("/api/predict")
+def predict_get(
+    mass_kg: float = 1500,
+    velocity_kmh: float = 56,
+    angle_deg: float = 0,
+    a_pillar_thickness_mm: float = 1.2,
+    crumple_zone_length_m: float = 0.8,
+    yield_strength_mpa: float = 400,
+    section_height_mm: float = 150,
+    section_width_mm: float = 100,
+    vehicle_class: str = "sedan",
+    test_type: str = "frontal",
+    year: int = 2020,
+):
+    g = {
+        "mass_kg": mass_kg, "velocity_kmh": velocity_kmh,
+        "angle_deg": angle_deg, "a_pillar_thickness_mm": a_pillar_thickness_mm,
+        "crumple_zone_length_m": crumple_zone_length_m,
+        "yield_strength_mpa": yield_strength_mpa,
+        "section_height_mm": section_height_mm,
+        "section_width_mm": section_width_mm,
+        "vehicle_class": vehicle_class, "test_type": test_type, "year": year,
+    }
+    return predict_full(g)
+
+
 @app.post("/api/predict")
 def predict(geom: GeometryInput):
     try:
@@ -255,6 +281,43 @@ def predict(geom: GeometryInput):
     except ValueError as exc:
         raise HTTPException(422, str(exc))
     return predict_full(geom.model_dump())
+
+
+@app.get("/api/compare")
+def compare_get(
+    a_mass_kg: float = 1500, a_velocity_kmh: float = 56, a_angle_deg: float = 0,
+    a_a_pillar_thickness_mm: float = 1.2, a_crumple_zone_length_m: float = 0.8,
+    a_yield_strength_mpa: float = 400, a_section_height_mm: float = 150,
+    a_section_width_mm: float = 100, a_vehicle_class: str = "sedan",
+    a_test_type: str = "frontal", a_year: int = 2020,
+    b_mass_kg: float = 2100, b_velocity_kmh: float = 72, b_angle_deg: float = 0,
+    b_a_pillar_thickness_mm: float = 1.2, b_crumple_zone_length_m: float = 0.8,
+    b_yield_strength_mpa: float = 400, b_section_height_mm: float = 150,
+    b_section_width_mm: float = 100, b_vehicle_class: str = "suv",
+    b_test_type: str = "frontal", b_year: int = 2020,
+):
+    def _g(p): return {
+        "mass_kg": p+"_mass_kg", "velocity_kmh": p+"_velocity_kmh",
+    }
+    ga = {k.replace("a_",""): v for k, v in {
+        "mass_kg": a_mass_kg, "velocity_kmh": a_velocity_kmh,
+        "angle_deg": a_angle_deg, "a_pillar_thickness_mm": a_a_pillar_thickness_mm,
+        "crumple_zone_length_m": a_crumple_zone_length_m,
+        "yield_strength_mpa": a_yield_strength_mpa,
+        "section_height_mm": a_section_height_mm,
+        "section_width_mm": a_section_width_mm,
+        "vehicle_class": a_vehicle_class, "test_type": a_test_type, "year": a_year,
+    }.items()}
+    gb = {k.replace("b_",""): v for k, v in {
+        "mass_kg": b_mass_kg, "velocity_kmh": b_velocity_kmh,
+        "angle_deg": b_angle_deg, "a_pillar_thickness_mm": b_a_pillar_thickness_mm,
+        "crumple_zone_length_m": b_crumple_zone_length_m,
+        "yield_strength_mpa": b_yield_strength_mpa,
+        "section_height_mm": b_section_height_mm,
+        "section_width_mm": b_section_width_mm,
+        "vehicle_class": b_vehicle_class, "test_type": b_test_type, "year": b_year,
+    }.items()}
+    return {"vehicle_a": predict_full(ga), "vehicle_b": predict_full(gb)}
 
 
 @app.post("/api/compare")
@@ -266,6 +329,48 @@ def compare(req: CompareRequest):
         raise HTTPException(422, str(exc))
     return {"vehicle_a": predict_full(req.vehicle_a.model_dump()),
             "vehicle_b": predict_full(req.vehicle_b.model_dump())}
+
+
+@app.get("/api/parameter-sweep")
+def parameter_sweep_get(
+    param: str = "velocity_kmh",
+    low: float = 10,
+    high: float = 120,
+    steps: int = 28,
+    mass_kg: float = 1500,
+    velocity_kmh: float = 56,
+    angle_deg: float = 0,
+    a_pillar_thickness_mm: float = 1.2,
+    crumple_zone_length_m: float = 0.8,
+    yield_strength_mpa: float = 400,
+    section_height_mm: float = 150,
+    section_width_mm: float = 100,
+    vehicle_class: str = "sedan",
+    test_type: str = "frontal",
+    year: int = 2020,
+):
+    base = {
+        "mass_kg": mass_kg, "velocity_kmh": velocity_kmh,
+        "angle_deg": angle_deg, "a_pillar_thickness_mm": a_pillar_thickness_mm,
+        "crumple_zone_length_m": crumple_zone_length_m,
+        "yield_strength_mpa": yield_strength_mpa,
+        "section_height_mm": section_height_mm,
+        "section_width_mm": section_width_mm,
+        "vehicle_class": vehicle_class, "test_type": test_type, "year": year,
+    }
+    values = np.linspace(low, high, steps)
+    points = []
+    for v in values:
+        g = dict(base)
+        g[param] = float(v)
+        try:
+            r = predict_full(g)
+        except Exception:
+            continue
+        points.append({"x": float(v), "hic_pinn": r["pinn"]["hic"],
+                       "hic_fea": r["fea"]["hic"],
+                       "fatality": r["pinn"]["fatality_prob"]})
+    return {"param": param, "points": points}
 
 
 @app.post("/api/parameter-sweep")
@@ -455,6 +560,13 @@ def _build_pdf() -> str:
         "claims.", small))
     doc.build(story)
     return out_path
+
+
+@app.get("/api/export/pdf")
+def export_pdf_get():
+    path = _build_pdf()
+    return {"status": "ok", "url": "/api/export/pdf/download",
+            "filename": os.path.basename(path)}
 
 
 @app.post("/api/export/pdf")

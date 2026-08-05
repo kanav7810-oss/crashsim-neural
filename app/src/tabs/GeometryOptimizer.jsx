@@ -41,7 +41,16 @@ export default function GeometryOptimizer() {
   // Debounced auto-prediction: instant feedback as sliders move.
   useEffect(() => {
     const t = setTimeout(() => {
-      api.post('/api/predict', geom).then(r => {
+      const qs = new URLSearchParams({
+        mass_kg: geom.mass_kg, velocity_kmh: geom.velocity_kmh,
+        angle_deg: geom.angle_deg, a_pillar_thickness_mm: geom.a_pillar_thickness_mm,
+        crumple_zone_length_m: geom.crumple_zone_length_m,
+        yield_strength_mpa: geom.yield_strength_mpa,
+        section_height_mm: geom.section_height_mm,
+        section_width_mm: geom.section_width_mm,
+        vehicle_class: geom.vehicle_class, test_type: geom.test_type, year: geom.year,
+      }).toString()
+      api.get(`/api/predict?${qs}`).then(r => {
         setPred(r)
         setErr('')
       }).catch(() => setPred(null))
@@ -52,9 +61,17 @@ export default function GeometryOptimizer() {
   // Parameter sweep for the velocity slider.
   useEffect(() => {
     const t = setTimeout(() => {
-      api.post('/api/parameter-sweep', {
-        param: 'velocity_kmh', low: 10, high: 120, steps: 28, geometry: geom
-      }).then(r => setSweep(r.points)).catch(() => {})
+      const qs = new URLSearchParams({
+        param: 'velocity_kmh', low: 10, high: 120, steps: 28,
+        mass_kg: geom.mass_kg, velocity_kmh: geom.velocity_kmh,
+        angle_deg: geom.angle_deg, a_pillar_thickness_mm: geom.a_pillar_thickness_mm,
+        crumple_zone_length_m: geom.crumple_zone_length_m,
+        yield_strength_mpa: geom.yield_strength_mpa,
+        section_height_mm: geom.section_height_mm,
+        section_width_mm: geom.section_width_mm,
+        vehicle_class: geom.vehicle_class, test_type: geom.test_type, year: geom.year,
+      }).toString()
+      api.get(`/api/parameter-sweep?${qs}`).then(r => setSweep(r.points)).catch(() => {})
     }, 200)
     return () => clearTimeout(t)
   }, [geom])
@@ -112,7 +129,16 @@ export default function GeometryOptimizer() {
           <div className="panel">
             <div className="panel-title">Injury <em>risk</em> surface</div>
             <div className="panel-sub">HIC vs impact velocity and A-pillar thickness</div>
-            <PlotlyChart data={surface.data} layout={surface.layout} height={340} />
+            <PlotlyChart data={surface.data} layout={{
+              ...surface.layout,
+              margin: { t: 10, l: 0, r: 0, b: 10 },
+              scene: {
+                ...surface.layout?.scene,
+                camera: { eye: { x: 1.6, y: -1.6, z: 0.9 } },
+                aspectmode: 'manual',
+                aspectratio: { x: 1.2, y: 1.2, z: 0.8 },
+              }
+            }} height={380} />
           </div>
         )}
         {heatmap && (

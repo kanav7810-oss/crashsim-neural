@@ -34,7 +34,16 @@ export default function ScenarioBuilder() {
     setLoading(true)
     setErr('')
     try {
-      const r = await api.post('/api/predict', geom)
+      const qs = new URLSearchParams({
+        mass_kg: geom.mass_kg, velocity_kmh: geom.velocity_kmh,
+        angle_deg: geom.angle_deg, a_pillar_thickness_mm: geom.a_pillar_thickness_mm,
+        crumple_zone_length_m: geom.crumple_zone_length_m,
+        yield_strength_mpa: geom.yield_strength_mpa,
+        section_height_mm: geom.section_height_mm,
+        section_width_mm: geom.section_width_mm,
+        vehicle_class: geom.vehicle_class, test_type: geom.test_type, year: geom.year,
+      }).toString()
+      const r = await api.get(`/api/predict?${qs}`)
       setResult(r)
     } catch (e) {
       setErr('Prediction service unavailable — please try again later.')
