@@ -2,16 +2,7 @@
   "installCommand": "cd app && npm install",
   "buildCommand": "cd app && npm run build",
   "outputDirectory": "app/dist",
-  "framework": "vite",
-  "functions": {
-    "api/*.js": { "memory": 256, "maxDuration": 30 }
-  },
   "rewrites": [
-    { "source": "/api/predict", "destination": "/api/predict" },
-    { "source": "/api/compare", "destination": "/api/compare" },
-    { "source": "/api/parameter-sweep", "destination": "/api/parameter-sweep" },
-    { "source": "/api/export-pdf", "destination": "/api/export-pdf" },
-    { "source": "/api/export-pdf/download", "destination": "/api/export-pdf/download" },
     { "source": "/((?!api).*)", "destination": "/index.html" }
   ]
 }
