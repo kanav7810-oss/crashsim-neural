@@ -56,7 +56,7 @@ export default function Comparison() {
       for (const [k, v] of Object.entries(a)) params[`a_${k}`] = v
       for (const [k, v] of Object.entries(b)) params[`b_${k}`] = v
       const qs = new URLSearchParams(params).toString()
-      const r = await api.get(`/api/compare?${qs}`)
+      const r = await api.getLocal(`/api/compare?${qs}`)
       setResult(r)
     } catch (e) { setErr('Comparison service unavailable.') }
   }

@@ -50,7 +50,7 @@ export default function GeometryOptimizer() {
         section_width_mm: geom.section_width_mm,
         vehicle_class: geom.vehicle_class, test_type: geom.test_type, year: geom.year,
       }).toString()
-      api.get(`/api/predict?${qs}`).then(r => {
+      api.getLocal(`/api/predict?${qs}`).then(r => {
         setPred(r)
         setErr('')
       }).catch(() => setPred(null))
@@ -71,7 +71,7 @@ export default function GeometryOptimizer() {
         section_width_mm: geom.section_width_mm,
         vehicle_class: geom.vehicle_class, test_type: geom.test_type, year: geom.year,
       }).toString()
-      api.get(`/api/parameter-sweep?${qs}`).then(r => setSweep(r.points)).catch(() => {})
+      api.getLocal(`/api/parameter-sweep?${qs}`).then(r => setSweep(r.points)).catch(() => {})
     }, 200)
     return () => clearTimeout(t)
   }, [geom])

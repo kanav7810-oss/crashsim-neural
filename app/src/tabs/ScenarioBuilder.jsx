@@ -43,7 +43,7 @@ export default function ScenarioBuilder() {
         section_width_mm: geom.section_width_mm,
         vehicle_class: geom.vehicle_class, test_type: geom.test_type, year: geom.year,
       }).toString()
-      const r = await api.get(`/api/predict?${qs}`)
+      const r = await api.getLocal(`/api/predict?${qs}`)
       setResult(r)
     } catch (e) {
       setErr('Prediction service unavailable — please try again later.')

@@ -12,11 +12,21 @@ async function handle(r) {
   return r.json()
 }
 
+// Absolute (Render) — for read-only GETs that work fine cross-origin.
 export function get(path, params) {
   const qs = params
     ? '?' + new URLSearchParams(Object.entries(params).filter(([, v]) => v !== '' && v != null)).toString()
     : ''
   return fetch(API + path + qs).then(handle)
+}
+
+// Relative (Vercel same-origin proxy) — for previously-POST endpoints that
+// need a server-side hop to avoid CORS. Returns parsed JSON.
+export function getLocal(path, params) {
+  const qs = params
+    ? '?' + new URLSearchParams(Object.entries(params).filter(([, v]) => v !== '' && v != null)).toString()
+    : ''
+  return fetch(path + qs).then(handle)
 }
 
 export function post(path, body) {
@@ -34,4 +44,4 @@ export function trainingStream(onEvent) {
   return () => es.close()
 }
 
-export default { get, post, trainingStream, API }
+export default { get, getLocal, post, trainingStream, API }
