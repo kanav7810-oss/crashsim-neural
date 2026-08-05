@@ -34,4 +34,5 @@ api_server.log
 api_server_err.log
 
 .vercel
+.vercel_python_packages
 .env*

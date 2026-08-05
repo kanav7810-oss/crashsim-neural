@@ -10,7 +10,6 @@ dependencies = [
   "pydantic>=2.9",
   "torch>=2.4",
   "scikit-learn>=1.5",
-  "shap>=0.46",
   "plotly>=5.24",
   "reportlab>=4.2",
   "matplotlib>=3.9",
