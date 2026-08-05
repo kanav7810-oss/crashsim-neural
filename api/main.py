@@ -300,10 +300,7 @@ def compare_get(
     b_section_width_mm: float = 100, b_vehicle_class: str = "suv",
     b_test_type: str = "frontal", b_year: int = 2020,
 ):
-    def _g(p): return {
-        "mass_kg": p+"_mass_kg", "velocity_kmh": p+"_velocity_kmh",
-    }
-    ga = {k.replace("a_",""): v for k, v in {
+    ga = {
         "mass_kg": a_mass_kg, "velocity_kmh": a_velocity_kmh,
         "angle_deg": a_angle_deg, "a_pillar_thickness_mm": a_a_pillar_thickness_mm,
         "crumple_zone_length_m": a_crumple_zone_length_m,
@@ -311,8 +308,8 @@ def compare_get(
         "section_height_mm": a_section_height_mm,
         "section_width_mm": a_section_width_mm,
         "vehicle_class": a_vehicle_class, "test_type": a_test_type, "year": a_year,
-    }.items()}
-    gb = {k.replace("b_",""): v for k, v in {
+    }
+    gb = {
         "mass_kg": b_mass_kg, "velocity_kmh": b_velocity_kmh,
         "angle_deg": b_angle_deg, "a_pillar_thickness_mm": b_a_pillar_thickness_mm,
         "crumple_zone_length_m": b_crumple_zone_length_m,
@@ -320,7 +317,7 @@ def compare_get(
         "section_height_mm": b_section_height_mm,
         "section_width_mm": b_section_width_mm,
         "vehicle_class": b_vehicle_class, "test_type": b_test_type, "year": b_year,
-    }.items()}
+    }
     return {"vehicle_a": predict_full(ga), "vehicle_b": predict_full(gb)}
 
 

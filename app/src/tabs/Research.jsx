@@ -34,9 +34,9 @@ export default function Research() {
     setExporting(true)
     setExported(false)
     try {
-      await api.getLocal('/api/export-pdf')
+      await api.getLocal('/api/export/pdf')
       setExported(true)
-      window.open('/api/export-pdf/download', '_blank')
+      window.open('/api/export/pdf/download', '_blank')
     } catch (e) { setErr('PDF export unavailable.') }
     finally { setExporting(false) }
   }
