@@ -3,21 +3,29 @@ name = "crashsim-neural"
 version = "1.0.0"
 requires-python = "==3.12.*"
 dependencies = [
-  "fastapi>=0.139.0",
-  "uvicorn[standard]>=0.51.0",
+  "fastapi>=0.115",
+  "uvicorn[standard]>=0.32",
   "numpy>=2.0",
   "pandas>=2.2",
-  "pydantic>=2.13",
-  "torch>=2.0",
+  "pydantic>=2.9",
+  "torch>=2.4",
   "scikit-learn>=1.5",
-  "shap>=0.50",
-  "plotly>=6.0",
-  "reportlab>=5.0",
+  "shap>=0.46",
+  "plotly>=5.24",
+  "reportlab>=4.2",
   "matplotlib>=3.9",
 ]
 
 [tool.uv]
-extra-index-url = "https://download.pytorch.org/whl/cpu"
+index-strategy = "unsafe-best-match"
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch-cpu" }
 
 [tool.vercel]
 entrypoint = "api.main:app"
