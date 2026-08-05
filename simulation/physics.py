@@ -315,8 +315,8 @@ def beam_buckling(geom: VehicleGeometry, axial_load: float,
     dx = L / (n - 1)
     D4_int, D2_int = _d2_d4_interior(n, dx)
     B = -D2_int
-    from scipy.linalg import eigh
     try:
+        from scipy.linalg import eigh
         w_vals = eigh(D4_int, B, eigvals_only=True, subset_by_index=[0, 4])
     except Exception:
         w_vals = np.linalg.eigvals(np.linalg.solve(B, D4_int))
