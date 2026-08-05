@@ -37,7 +37,7 @@ export default function ScenarioBuilder() {
       const r = await api.post('/api/predict', geom)
       setResult(r)
     } catch (e) {
-      setErr(e.message)
+      setErr('Prediction service unavailable — please try again later.')
     } finally {
       setLoading(false)
     }

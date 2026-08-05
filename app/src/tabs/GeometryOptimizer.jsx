@@ -44,7 +44,7 @@ export default function GeometryOptimizer() {
       api.post('/api/predict', geom).then(r => {
         setPred(r)
         setErr('')
-      }).catch(e => setErr(e.message))
+      }).catch(() => setPred(null))
     }, 250)
     return () => clearTimeout(t)
   }, [geom])
