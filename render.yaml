@@ -8,6 +8,7 @@
     startCommand: uvicorn api.main:app --host 0.0.0.0 --port $PORT --workers 1
     healthCheckPath: /api/health
     autoDeploy: true
+    branch: master
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.9
