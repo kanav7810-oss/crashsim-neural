@@ -1,8 +1,6 @@
-import { proxy } from '../lib/proxy.js'
+const { RENDER } = require('../lib/proxy.js')
 
-const RENDER = 'https://crashsim-neural-api.onrender.com'
-
-export default async function handler(req, res) {
+module.exports = async (req, res) => {
   try {
     const r = await fetch(RENDER + '/api/export/pdf/download')
     const buf = Buffer.from(await r.arrayBuffer())
