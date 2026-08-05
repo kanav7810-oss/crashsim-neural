@@ -34,9 +34,11 @@ export default function Research() {
     setExporting(true)
     setExported(false)
     try {
-      await api.getLocal('/api/export/pdf')
-      setExported(true)
+      // The download endpoint builds the PDF on-demand and streams it back in
+      // a single serverless invocation (Vercel functions are stateless, so a
+      // two-step build-then-download would 404 on a different instance).
       window.open('/api/export/pdf/download', '_blank')
+      setExported(true)
     } catch (e) { setErr('PDF export unavailable.') }
     finally { setExporting(false) }
   }

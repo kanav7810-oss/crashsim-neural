@@ -579,9 +579,7 @@ def export_pdf():
 
 @app.get("/api/export/pdf/download")
 def download_pdf():
-    path = os.path.join(REPORTS_DIR, "crashsim_neural_research_report.pdf")
-    if not os.path.exists(path):
-        raise HTTPException(404, "PDF not generated yet; POST /api/export/pdf first")
+    path = _build_pdf()
     return FileResponse(path, media_type="application/pdf",
                         filename="crashsim_neural_research_report.pdf")
 
