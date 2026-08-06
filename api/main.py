@@ -46,30 +46,51 @@ _VALID_CLASSES = {"sedan", "suv", "truck", "ev"}
 _VALID_TESTS = {"frontal", "side", "rollover"}
 
 # ---------------------------------------------------------------------------
-# Lazily loaded model context
+# Model context — loaded eagerly at import for fast cold starts
 # ---------------------------------------------------------------------------
 _CTX = {}
+_MODEL_LOAD_ERROR = None
+
+
+def _load_model_context():
+    """Load PINN model and scaler. Runs once at import."""
+    global _CTX, _MODEL_LOAD_ERROR
+    if _CTX:
+        return _CTX
+    try:
+        import torch
+        from models.pinn import CrashPinn, PinnScaler
+        state_path = os.path.join(WEIGHTS_DIR, "state.json")
+        weights_path = os.path.join(WEIGHTS_DIR, "pinn.pt")
+        if not os.path.exists(state_path):
+            raise FileNotFoundError(f"Missing {state_path}")
+        if not os.path.exists(weights_path):
+            raise FileNotFoundError(f"Missing {weights_path}")
+        with open(state_path, encoding="utf-8") as f:
+            state = json.load(f)
+        model = CrashPinn(state["n_in"])
+        model.load_state_dict(torch.load(weights_path, map_location="cpu"))
+        model.eval()
+        _CTX = {
+            "model": model,
+            "scaler": PinnScaler(
+                np.array(state["target_min"], dtype=np.float32),
+                np.array(state["target_max"], dtype=np.float32)),
+            "mean": np.array(state["feature_mean"], dtype=np.float32),
+            "std": np.array(state["feature_std"], dtype=np.float32),
+            "cols": state["feature_columns"],
+            "targets": state["targets"],
+        }
+        return _CTX
+    except Exception as e:
+        _MODEL_LOAD_ERROR = e
+        raise
 
 
 def get_ctx():
-    if not _CTX:
-        import torch
-        from models.pinn import CrashPinn, PinnScaler
-        with open(os.path.join(WEIGHTS_DIR, "state.json"), encoding="utf-8") as f:
-            state = json.load(f)
-        model = CrashPinn(state["n_in"])
-        model.load_state_dict(torch.load(
-            os.path.join(WEIGHTS_DIR, "pinn.pt"), map_location="cpu"))
-        model.eval()
-        _CTX.update(
-            model=model,
-            scaler=PinnScaler(np.array(state["target_min"], dtype=np.float32),
-                              np.array(state["target_max"], dtype=np.float32)),
-            mean=np.array(state["feature_mean"], dtype=np.float32),
-            std=np.array(state["feature_std"], dtype=np.float32),
-            cols=state["feature_columns"],
-            targets=state["targets"])
-    return _CTX
+    if _MODEL_LOAD_ERROR:
+        raise _MODEL_LOAD_ERROR
+    return _load_model_context()
 
 
 def load_dataset() -> pd.DataFrame:
@@ -184,7 +205,32 @@ def predict_full(g: dict) -> dict:
 
 @app.get("/api/health")
 def health():
-    return {"status": "ok", "service": "crashsim-neural"}
+    model_ok = False
+    model_error = None
+    try:
+        ctx = get_ctx()
+        model_ok = ctx["model"] is not None
+    except Exception as e:
+        model_error = str(e)
+    return {
+        "status": "ok" if model_ok else "degraded",
+        "service": "crashsim-neural",
+        "model_loaded": model_ok,
+        "model_error": model_error,
+    }
+
+
+@app.get("/api/warmup")
+def warmup():
+    """Force model load to warm up cold starts."""
+    try:
+        import torch
+        ctx = get_ctx()
+        # Do a dummy prediction to ensure everything works
+        dummy = ctx["model"](torch.zeros(1, len(ctx["cols"]), dtype=torch.float32))
+        return {"status": "warmed", "model_loaded": True, "input_dim": len(ctx["cols"])}
+    except Exception as e:
+        raise HTTPException(500, f"Warmup failed: {e}")
 
 
 @app.get("/api/dataset/summary")
