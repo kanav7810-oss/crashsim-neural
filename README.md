@@ -6,7 +6,7 @@ probability) for a vehicle geometry and crash configuration, and compares those
 predictions against a linear finite element (FEA) baseline.
 
 **Live demo:** https://crashsim-neural.vercel.app
-**API:** https://crashsim-neural-api.onrender.com (FastAPI docs at /docs)
+**API:** https://crashsim-neural.vercel.app/api (FastAPI docs at https://crashsim-neural.vercel.app/docs)
 
 ### Screenshots
 
