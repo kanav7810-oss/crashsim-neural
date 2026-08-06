@@ -51,14 +51,24 @@ export default function Comparison() {
 
   const run = async () => {
     setErr('')
-    try {
-      const params = {}
-      for (const [k, v] of Object.entries(a)) params[`a_${k}`] = v
-      for (const [k, v] of Object.entries(b)) params[`b_${k}`] = v
-      const qs = new URLSearchParams(params).toString()
-      const r = await api.getLocal(`/api/compare?${qs}`)
-      setResult(r)
-    } catch (e) { setErr('Comparison service unavailable.') }
+    const params = {}
+    for (const [k, v] of Object.entries(a)) params[`a_${k}`] = v
+    for (const [k, v] of Object.entries(b)) params[`b_${k}`] = v
+    const qs = new URLSearchParams(params).toString()
+    // Retry with backoff to absorb cold-start latency on the serverless
+    // function; a single slow first invocation shouldn't surface as an error.
+    let lastErr
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        const r = await api.getLocal(`/api/compare?${qs}`)
+        setResult(r)
+        return
+      } catch (e) {
+        lastErr = e
+        if (attempt < 2) await new Promise(res => setTimeout(res, 1200 * (attempt + 1)))
+      }
+    }
+    setErr('Comparison service unavailable.')
   }
 
   const chartData = result ? [
