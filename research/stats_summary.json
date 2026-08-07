@@ -1,0 +1,43 @@
+{
+  "generated_at": "2026-08-02T21:16:59",
+  "mean_hic_prediction_error": {
+    "mae": 127.62878972833806,
+    "rmse": 156.04307921441102,
+    "r2": 0.7881968125690252,
+    "mae_ci_95": {
+      "point": 127.62878972833806,
+      "ci_low": 108.76114713495429,
+      "ci_high": 146.62184495058926
+    }
+  },
+  "fea_baseline": {
+    "mae": 228.4477206523352,
+    "rmse": 274.8237124180296,
+    "r2": 0.3430204188119862
+  },
+  "accuracy_improvement_over_fea_pct": 43.22066395164017,
+  "sample_sizes": {
+    "train": 390,
+    "val": 82,
+    "test": 88
+  },
+  "total_records": 560,
+  "computational_speedup": {
+    "pinn_inference_ms": 0.0159,
+    "fea_inference_ms": 0.5469,
+    "speedup_x": 34.48
+  },
+  "safety_improvement": {
+    "current_mean_fatality": 0.25970732142857145,
+    "optimal_mean_fatality": 0.1822806634363054,
+    "relative_risk_reduction": 0.2981304399366388,
+    "annual_us_fatalities_modeled": 27360.0,
+    "projected_lives_saved_per_year": 8156.848836666437,
+    "methodology": "Physics re-run with class 90th percentile pillar thickness and crumple length, 85th percentile yield."
+  },
+  "training": {
+    "epochs_trained": 339,
+    "best_val_hic_rmse": 134.7531280517578,
+    "fea_val_hic_rmse": 265.82268662988236
+  }
+}
