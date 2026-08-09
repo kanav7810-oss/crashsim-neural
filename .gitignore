@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.pytest_cache/
+.venv/
+mineru-env/
+
+# Node
+node_modules/
+dist/
+build/
+.vite/
+
+# JS
+*.log
+
+# Environment
+.env
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Reports (regenerate with /api/export/pdf)
+api_server.log
+api_server_err.log
