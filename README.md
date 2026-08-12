@@ -1,3 +1,14 @@
+---
+title: CRASHSIM-NEURAL API
+emoji: 🚗
+colorFrom: indigo
+colorTo: slate
+sdk: docker
+app_port: 7860
+pinned: false
+license: mit
+---
+
 # CRASHSIM-NEURAL
 
 A Physics-Informed Neural Network (PINN) crashworthiness simulator that predicts

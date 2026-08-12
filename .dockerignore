@@ -1,0 +1,14 @@
+﻿app
+tests
+docs
+.git
+node_modules
+__pycache__
+*.pyc
+.env
+.env.local
+vercel.json
+.gitignore
+README.md
+DESIGN.md
+PRODUCT.md
