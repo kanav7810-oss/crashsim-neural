@@ -183,6 +183,39 @@ def health():
     return {"status": "ok", "service": "crashsim-neural"}
 
 
+@app.get("/api/debug/torch")
+def debug_torch():
+    import traceback
+    info = {"cwd": os.getcwd(), "weights_dir": WEIGHTS_DIR}
+    try:
+        import torch
+        info["torch"] = torch.__version__
+        info["torch_file"] = torch.__file__
+    except Exception as exc:
+        info["torch_error"] = repr(exc)
+        info["torch_trace"] = traceback.format_exc()
+        return info
+    try:
+        from models.pinn import CrashPinn, PinnScaler
+        with open(os.path.join(WEIGHTS_DIR, "state.json"), encoding="utf-8") as f:
+            state = json.load(f)
+        model = CrashPinn(state["n_in"])
+        model.load_state_dict(torch.load(
+            os.path.join(WEIGHTS_DIR, "pinn.pt"), map_location="cpu"))
+        model.eval()
+        info["model_loaded"] = True
+        info["state_n_in"] = state["n_in"]
+    except Exception as exc:
+        info["model_error"] = repr(exc)
+        info["model_trace"] = traceback.format_exc()
+    try:
+        info["weights_dir_exists"] = os.path.isdir(WEIGHTS_DIR)
+        info["weights_dir_listing"] = os.listdir(WEIGHTS_DIR) if info["weights_dir_exists"] else []
+    except Exception as exc:
+        info["list_error"] = repr(exc)
+    return info
+
+
 # ---------------------------------------------------------------------------
 # Dataset explorer
 # ---------------------------------------------------------------------------
