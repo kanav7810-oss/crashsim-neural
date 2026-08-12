@@ -1,0 +1,15 @@
+api
+simulation
+models
+analysis
+data
+research
+visualizations
+tests
+docs
+Dockerfile
+.dockerignore
+requirements.txt
+render.yaml
+*.pyc
+__pycache__

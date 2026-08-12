@@ -1,15 +1,7 @@
----
-title: CRASHSIM-NEURAL API
-emoji: 🚗
-colorFrom: indigo
-colorTo: slate
-sdk: docker
-app_port: 7860
-pinned: false
-license: mit
----
-
 # CRASHSIM-NEURAL
+
+Live demo: https://app-eight-psi-64.vercel.app
+API: https://crashsim-neural-api.onrender.com (FastAPI docs at /docs)
 
 A Physics-Informed Neural Network (PINN) crashworthiness simulator that predicts
 occupant injury outcomes (HIC, chest g-force, compartment intrusion, fatality
